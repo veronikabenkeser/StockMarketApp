@@ -7,14 +7,13 @@ module.exports = function(app, express) {
    
     apiRouter.route('/stocks')
         .post(function(req,res){
-            stocks.getStock(req,res);
+            stocks.addStock(req,res);
         });
         
-            apiRouter.route('/hello')
-        .get(function(req,res){
-            console.log('trying to post hello');
-            stocks.getStock(req,res);
-        });
+    apiRouter.route('/stocks/:stock_id')
+        .delete(function(req,res){
+            stocks.deleteStock(req,res);
+    });   
         
     return apiRouter;
 };

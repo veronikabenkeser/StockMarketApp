@@ -12,9 +12,22 @@
         <div id="stock-list"></div>
         <div id="search-bar"></div>
     </div>
+  
     <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+     <script>
+        var socket = io.connect('https://stocks-app-autumncat.c9users.io/');
+         socket.on('connect', function(data) {
+             console.log('hello from index');
+        socket.emit('join', 'Hello World from client');
+        
+        socket.on('messages', function(data) {
+                alert(data);
+        });
+    });
+    </script>
+
     <script data-main='/main' src="/libs/requirejs/require.js"></script>
 
 </body>

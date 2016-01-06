@@ -1,6 +1,8 @@
 var http = require('http');
 var path = require("path");
 var express = require('express');
+var mongoose  = require("mongoose");
+var config = require("./config");
 var bodyParser = require("body-parser");
 var redis = require("redis");
 // var redisClient = redis.createClient();
@@ -21,21 +23,19 @@ app.use(function(req,res,next){
   
 });
 
-//Connect to Redis
-
-
-
-//Routes for our API
-//basic route for the homepage
-//send our index.html file to the user for the home page
-// app.get('/', function(req, res){
-//   res.sendFile(path.join(__dirname+'/index.html'));
-// });
+//Connect to MongoDb
+mongoose.connect(config.database[app.settings.env],function(err,res){
+  if(err){
+    console.log(console.log('Error connecting to the database. ' + err));
+  }else{
+    console.log('Connected to Database: '+ config.database[app.settings.env]);
+  }
+  
+});
 
 app.use(express.static(__dirname+'/client'));
 
 var apiRoutes = require("./app/routes/api")(app,express);
-
 
 //Register our apiRoutes
 app.use('/api',apiRoutes);

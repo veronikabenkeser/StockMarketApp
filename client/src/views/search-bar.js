@@ -3,8 +3,11 @@ define(['jquery',
     'backbone',
     'text!src/templates/search-bar.html',
     'chart-js',
-    'eventBus'
-], function($, _, Backbone, SearchTemplate,Chart,EventBus) {
+    'eventBus',
+    'src/models/stock',
+    'src/views/stock',
+    'socketIo'
+], function($, _, Backbone, SearchTemplate,Chart,EventBus,Stock,StockView,socketIo) {
     var SearchView = Backbone.View.extend({
             template: _.template(SearchTemplate),
             el:'#search-bar',
@@ -24,15 +27,21 @@ define(['jquery',
                     type: 'POST',
                     dataType:"json",
                     data:{'stock_name':company}
-                }).done(function(response){
-                    self.updateData(response);
+                }).done(function(result){
+                    var stockView = new StockView({model: result});
+                    self.notifyUsers();
+                 
+                    // self.updateData(response);
                 }).fail(function(err){
                     console.log(err);
                 });
             },
             updateData:function(data){
-             EventBus.trigger('graph:newData', data);
+                EventBus.trigger('graph:newData', data);
+            },
+            notifyUsers:function(){
             }
+            
         });
     return SearchView;
 });

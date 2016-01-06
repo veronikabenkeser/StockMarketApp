@@ -8,13 +8,7 @@ define(['jquery',
     var GraphView = Backbone.View.extend({
         template: _.template(GraphTemplate),
         el: '#graph',
-        // initialize: function(opts) {
-        //     this.opts=opts;
-        //      _.bindAll(this, 'render');
-        //     // this.render();
-        //     this.bindEvents();
-        // },
-        initialize: function(opts) {
+        initialize: function() {
             this.bindEvents();
         },
         getRandomColor: function() {
@@ -26,7 +20,7 @@ define(['jquery',
             return color;
         },
         bindEvents: function() {
-            EventBus.on('graph:newData', this.addData);
+            EventBus.on('graph:newData', this.render,this);
         },
         addData: function(data) {
             var self = this;
@@ -44,16 +38,32 @@ define(['jquery',
             };
 
             obj.data = [];
-            var dataArr = data.dataset_data.data;
-            for (var i = 0; i < dataArr.length; i++) {
-                labelArr.push(dataArr[0]);
-                obj.data.push(dataArr[1]);
+            if(data){
+                var dataArr = data.dataset_data.data;
+                for (var i = 0; i < dataArr.length; i++) {
+                    var month = dataArr[i][0].toString().slice(5,7);
+                    var year= dataArr[i][0].toString().slice(0,4);
+                    var str = month+"-"+year;
+                    labelArr.push(str);
+                    console.log(dataArr[i][1]);
+                    var price = dataArr[i][1];
+                    obj.data.push(parseInt(price,10));
+                }
             }
-            this.render(labelArr, obj);
+            return [labelArr,obj];
         },
-        render: function(labelArr, obj) {
+        render: function(data) {
+            
+            var resultsArr = this.addData(data)
+            var labelArr= resultsArr[0];
+            console.log('labelArr');
+            console.log(!labelArr)
+            var obj = resultsArr[1];
+            
             this.$el.html(this.template);
-            if (!labelArr && !obj) {
+            console.log(labelArr);
+            console.log(obj);
+            if (!labelArr) {
                 console.log('nine');
                 var data = {
                     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -68,29 +78,22 @@ define(['jquery',
                         data: [28, 48, 40, 19, 86, 27, 90]
                     }]
                 };
+            } else  if (labelArr.length===0) {
+                var data = {
+                    labels: [null],
+                    datasets: [{
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(151,187,205,1)",
+                        data: [null]
+                    }]
+                };
             }
             else {
-
-
-
-                // var self =this;
-                // var data=[];
-
-                // self.model.toJSON().options.forEach(function(option){ 
-
-                //         var obj = {
-                //             value: parseInt(option.votes,10),
-                //             color: self.getRandomColor(),
-                //             highlight: "#FF5A5E", 
-                //             label: option.text
-                //         };
-                //         data.push(obj);
-                //     });
-                //      self.$el.html(this.template(self.model.toJSON()));
-
-                // self.$el.html(this.template(self.model.toJSON()));
-
-
                 var data = {
                     labels: labelArr,
                     datasets: [

@@ -1,50 +1,18 @@
 #!/bin/env node
-//Binds our app to a network
+//Bind our app to a network
 var http = require("http");
 var app = require('./server');
 var server = http.createServer(app);
 var sio = require("socket.io");
-var redis = require("redis");
-var redisClient = redis.createClient();
+
+
+var io = sio.listen(server); //listen for requests on the http server
+// var io = require('socket.io')(server);
+//chmod +x www to make this file executable
 
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   console.log("Server listening now.. ");
 });
 
-// create socket server
-var io = sio.listen(server); //listen for requests on the http server
-
-//did chmod +x www to make this file executable
-
-//Whenever someone connects to this socket
-io.on('connection',function(socket){
-   
-     console.log("Client connected..");
-     redisClient.lrange("stocks", 0, -1, function(err,stocks){
-         if(err){
-             throw Error;
-             
-         } else {
-         stocks.forEach(function(stock){
-            //  stock = JSON.parse(stock);//parse into JSON object
-              socket.emit('updateStocks',stock);
-         });
-         }
-     });
-     
-     socket.on('updateStocks',function(stock){
-         recordNewStock(stock);
-         socket.broadcast.emit('updateStocks',stock);
-        socket.emit('updateStocks',stock);
-     });
-     
-});
-
-function recordNewStock(stockName){
-    // var message = JSON.stringify({name:name,data:data});
-    redisClient.rpush("stocks", stockName, function(err,reply){
-        if(err) throw Error;
-    });
- 
-}
-
+var IoServer = require('./ioserver');
+new IoServer({io: io});
