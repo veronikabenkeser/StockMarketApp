@@ -3,32 +3,37 @@ define(['jquery',
     'backbone',
     'text!src/templates/stock.html',
     'eventBus'
-], function($, _, Backbone, StockTemplate,EventBus) {
+], function($, _, Backbone, StockTemplate, EventBus) {
     var StockView = Backbone.View.extend({
-        el:'#stock-list',
         template: _.template(StockTemplate),
-        initialize:function(){
-            this.listenTo(this.model, 'destroy', this.remove); 
+        initialize: function() {
             this.render();
+            this.model.on('destroy', this.remove, this);
         },
-        events:{
+        events: {
             'click .close-button': 'deleteStock'
         },
-        deleteStock:function(){
-            var self =this;
+        clearStock: function(stock) {
+            this.remove();
+        },
+        deleteStock: function() {
+            var self = this;
             //delete from collection and server
             self.model.destroy({
-                success: function(model, response) {
-                    console.log('model deleted');
-            },
-                error:function(err){
+                success: function(model, response, options) {
+                    EventBus.trigger('stock-del', model);
+                },
+                error: function(model, response, options) {
                     console.log('error deleting the model');
+
                 }
             });
         },
-        render:function(){
-            console.log('model here'+this.model);
-            this.$el.html(this.template({stock:this.model}));
+
+        render: function() {
+            this.$el.html(this.template({
+                stock: this.model.toJSON()
+            }));
             return this;
         }
     });

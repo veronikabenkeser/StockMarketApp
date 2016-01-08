@@ -1,66 +1,52 @@
-// Entry point to the app. Configuring how RequireJS loads the rest of the app 
 require.config({
-    // baseUrl:"client",
     paths: {
         'jquery': 'libs/jquery/dist/jquery',
-        'bootstrap-js':'libs/bootstrap/dist/js/bootstrap',
+        'bootstrap-js': 'libs/bootstrap/dist/js/bootstrap',
         'underscore': 'libs/underscore/underscore',
         'backbone': 'libs/backbone/backbone',
         'text': 'libs/text/text',
-        'chart-js': 'libs/Chart.js/Chart.min'
+        'chart-js': 'libs/Chart.js/Chart.min',
+        'socketIO': "socket.io/socket.io"
     },
     shim: {
         'underscore': {
-            exports: '_' //This line tells RequireJS that the script in 'lib/underscore.js' creates a global variable called _ instead of defining a module. 
+            exports: '_' 
         },
-        'bootstrap-js':{
+        'bootstrap-js': {
             deps: ['jquery'],
-            exports:'bootstrap_js'
+            exports: 'bootstrap_js'
         },
-        'chart-js':{
+        'chart-js': {
             exports: 'Chart'
+        },
+        'socketIO': {
+            exports: 'io'
         }
     }
 });
 
-require(['jquery','bootstrap-js', 'underscore', 'backbone', 'chart-js', 'router'], function($, bootstrap_js, _, Backbone, Chart,  AppRouter) {
+require(['jquery', 'bootstrap-js', 'underscore', 'backbone', 'chart-js', 'socketIO', 'eventBus', 'src/views/home'], function($, bootstrap_js, _, Backbone, Chart, io, EventBus, HomeView) {
     $(function() {
-        //Global change to ajax handling
-        //Any ajax call that gest a 401 error will get trapped and
-        // the user will be taken to the login page
-        $.ajaxSetup({
-            statusCode: {
-                401: function(context) {
-                    // EventBus.trigger('router:navigate', {
-                    //     route: 'login',
-                    //     options: {
-                    //         trigger: true
-                    //     }
-                    // });
+        var socket = io.connect('https://stocks-app-autumncat.c9users.io/');
+        socket.on('connect', function(data) {
 
-                },
-                //when token has expired
-                403: function(context){
-                    // EventBus.trigger("app:logout");
-                    // EventBus.trigger('router:navigate', {
-                    //     route: 'login',
-                    //     options:{
-                    //         trigger:true
-                    //     }
-                    // });
-                }
-            },
-            //if the user got a token,
-            //include the token in the header of all 
-            //of the AJAX calls.
-            //before ajax req is sent to api links
-            
-            
-            // beforeSend: function(xhr) {
-            //     var token = window.localStorage.getItem(globals.auth.TOKEN_KEY);
-            //     xhr.setRequestHeader('x-access-token', token);
-            // }
+            EventBus.on('add-notify', function(stock) {
+                socket.emit('notify-add-stock', stock);
+            });
+
+            EventBus.on('del-notify', function(stock) {
+                console.log('socket is emitting noti-del-stock');
+                socket.emit('notify-del-stock', stock);
+            });
+
+            socket.on('notifyOf-add', function(stock) { //received a message from server
+                EventBus.trigger('stocks:addStock', stock);
+            });
+
+            socket.on('notifyOf-del', function(stock) {
+                EventBus.trigger('stock:delStock', stock);
+            });
         });
-          var router = new AppRouter();
+        var homeView = new HomeView();
     });
 });

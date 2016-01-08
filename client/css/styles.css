@@ -14,10 +14,17 @@ body {
   position:relative;
   padding-left: 16px;
   padding-right:16px;
+  margin:10px;
 }
 .close-button:after {
   content: '✖'; 
   position:absolute;
   margin-top:-10px;
   margin-left:3px;
+}
+
+#stock-list{
+  display:flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
 }

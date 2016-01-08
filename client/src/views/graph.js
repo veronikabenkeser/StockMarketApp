@@ -9,7 +9,11 @@ define(['jquery',
         template: _.template(GraphTemplate),
         el: '#graph',
         initialize: function() {
+            this.data = {};
+            this.data.labels=[];
+            this.data.datasets=[];
             this.bindEvents();
+            this.render();
         },
         getRandomColor: function() {
             var letters = '0123456789ABCDEF'.split('');
@@ -20,90 +24,33 @@ define(['jquery',
             return color;
         },
         bindEvents: function() {
-            EventBus.on('graph:newData', this.render,this);
+            var self=this;
+            EventBus.on('graph:newData', function(stock){
+                self.addStock(stock).then(self.render());
+            });
         },
-        addData: function(data) {
-            var self = this;
-            console.log('data');
-            var labelArr = [];
-            var obj = {
-                label: "My First dataset",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: []
-            };
-
-            obj.data = [];
-            if(data){
-                var dataArr = data.dataset_data.data;
-                for (var i = 0; i < dataArr.length; i++) {
-                    var month = dataArr[i][0].toString().slice(5,7);
-                    var year= dataArr[i][0].toString().slice(0,4);
-                    var str = month+"-"+year;
-                    labelArr.push(str);
-                    console.log(dataArr[i][1]);
-                    var price = dataArr[i][1];
-                    obj.data.push(parseInt(price,10));
-                }
-            }
-            return [labelArr,obj];
-        },
-        render: function(data) {
-            
-            var resultsArr = this.addData(data)
-            var labelArr= resultsArr[0];
-            console.log('labelArr');
-            console.log(!labelArr)
-            var obj = resultsArr[1];
-            
-            this.$el.html(this.template);
-            console.log(labelArr);
-            console.log(obj);
-            if (!labelArr) {
-                console.log('nine');
-                var data = {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                    datasets: [{
-                        label: "My Second dataset",
+        addStock:function(stock){
+            var self=this;
+               return new Promise(function(resolve,reject){
+                   var obj = {
+                        label: stock.symbol,
                         fillColor: "rgba(151,187,205,0.2)",
                         strokeColor: "rgba(151,187,205,1)",
                         pointColor: "rgba(151,187,205,1)",
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(151,187,205,1)",
-                        data: [28, 48, 40, 19, 86, 27, 90]
-                    }]
+                        data: stock.prices
                 };
-            } else  if (labelArr.length===0) {
-                var data = {
-                    labels: [null],
-                    datasets: [{
-                        label: "My Second dataset",
-                        fillColor: "rgba(151,187,205,0.2)",
-                        strokeColor: "rgba(151,187,205,1)",
-                        pointColor: "rgba(151,187,205,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(151,187,205,1)",
-                        data: [null]
-                    }]
-                };
-            }
-            else {
-                var data = {
-                    labels: labelArr,
-                    datasets: [
-                        obj
-                    ]
-                };
-
-            }
+                 self.data.labels=stock.labels;
+                 resolve(self.data.datasets.push(obj));
+               });
+        },
+        render:function(){
+            var self=this;
+            self.$el.html(this.template);
             var ctx = $("#myChart").get(0).getContext("2d");
-            var myLineChart = new Chart(ctx).Line(data);
+            var myLineChart = new Chart(ctx).Line(self.data);
             document.getElementById('js-legend').innerHTML = myLineChart.generateLegend();
             return this;
         }

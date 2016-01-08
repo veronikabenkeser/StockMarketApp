@@ -1,9 +1,10 @@
 define(['underscore',
         'backbone',
-        'src/models/stock'],function(_,Backbone,Stock){
-    var Stocks = Backbone.Collection().extend({
-       model:Stock,
-       url:'/api/stocks'
+        'src/models/stock',
+        'socketIO'],function(_,Backbone,Stock,io){
+    var Stocks = Backbone.Collection.extend({
+        model:Stock,
+        url:'/api/stocks'
     });
    return Stocks;         
 });

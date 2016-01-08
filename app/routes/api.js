@@ -7,13 +7,28 @@ module.exports = function(app, express) {
    
     apiRouter.route('/stocks')
         .post(function(req,res){
+            // stocks.addStock(req,res);
+            stocks.saveStock(req,res);
+        })
+        .get(function(req,res){
+            stocks.getStocks(req,res);
+        });
+        
+        
+         apiRouter.route('/stocks/check')
+        .post(function(req,res){
             stocks.addStock(req,res);
         });
+        
         
     apiRouter.route('/stocks/:stock_id')
         .delete(function(req,res){
             stocks.deleteStock(req,res);
-    });   
+        })
+        .get(function(req,res){
+            console.log('request here');
+            stocks.getStockById(req,res);
+        });
         
     return apiRouter;
 };

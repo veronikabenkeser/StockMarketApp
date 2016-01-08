@@ -5,14 +5,28 @@ var Stock = require("../models/stock");
 module.exports = {
    
     addStock: function(req,res){
-        var self=this;
+        // var self=this;
+        // self.getStockData(req) 
+        //   .then(function(dataArr){
+        //         var modDataArr=self.formatData(dataArr);
+        //         return self.createStock(modDataArr,req.body.stock_name);
+        //   })
+        //   .then(function(savedStock){
+        //      return res.json(savedStock);
+        //   }).catch(function(){
+        //     res.status(500).send({ error: "Unknown internal server error" });
+        //   });
+        
+         var self=this;
         self.getStockData(req) 
           .then(function(dataArr){
                 var modDataArr=self.formatData(dataArr);
-                return self.createStock(modDataArr,req.body.stock_name);
-          })
-          .then(function(savedStock){
-             return res.json(savedStock);
+                 var obj={};
+        obj.symbol=req.body.stock_name;
+        obj.labels=modDataArr[0];
+       obj.prices=modDataArr[1];
+                return res.json(obj);
+          
           }).catch(function(){
             res.status(500).send({ error: "Unknown internal server error" });
           });
@@ -37,7 +51,7 @@ module.exports = {
         stock.symbol=stockSym;
         stock.labels=dataArr[0];
         stock.prices=dataArr[1];
-        stock.save(function(err, stock) {
+        stock.save(function(err) {
                 if (err) reject(err);
                     resolve(stock);
             });
@@ -67,8 +81,34 @@ module.exports = {
                 _id: req.params.stock_id
             }, function(err, stock) {
                 if (err) return res.status(500).json(err);
-                return res.json({success:true});
+                res.json({success:true});
             });
         });
+    },
+    getStockById:function(req,res){
+        console.log('req.params.stock_id'+req.params.stock_id);
+        console.log('req.body.id'+req.body.id);
+        console.log('req'+req.body._id);
+        Stock.findById(req.params.stock_id,function(err,stock){
+            if(err)return res.status(400).json(err);
+            res.json(stock);
+        });
+    },
+    getStocks:function(req,res){
+        Stock.find(function(err,stocks){
+            if(err)return res.send(400).json(err);
+            res.json(stocks);
+        });
+    },
+    saveStock:function(req,res){
+       var stock = new Stock();
+       var obj =JSON.parse(JSON.stringify(req.body));
+        stock.symbol=obj.symbol;
+        stock.labels=obj.labels;
+        stock.prices= obj.prices;
+        stock.save(function(err,stock) {
+                if (err) return res.status(400).json(err);
+                res.json(stock);
+            });
     }
 }
