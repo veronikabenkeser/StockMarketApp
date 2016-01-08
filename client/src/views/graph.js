@@ -31,12 +31,14 @@ define(['jquery',
         },
         addStock:function(stock){
             var self=this;
+            var color = self.getRandomColor();
                return new Promise(function(resolve,reject){
                    var obj = {
                         label: stock.symbol,
-                        fillColor: "rgba(151,187,205,0.2)",
-                        strokeColor: "rgba(151,187,205,1)",
-                        pointColor: "rgba(151,187,205,1)",
+                        fillColor: "rgba(220,220,220,0)",
+                        strokeColor: color,
+                        // pointColor: "rgba(151,187,205,1)",
+                         pointColor: color,
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
                         pointHighlightStroke: "rgba(151,187,205,1)",
@@ -50,7 +52,12 @@ define(['jquery',
             var self=this;
             self.$el.html(this.template);
             var ctx = $("#myChart").get(0).getContext("2d");
-            var myLineChart = new Chart(ctx).Line(self.data);
+            var myLineChart = new Chart(ctx).Line(self.data,{
+                scaleFontColor: "black",
+                 //legendTemplate:"<%for (var i=0; i<datasets.length; i++){%><%if(datasets[i].label){%><div class=\"title\"><div class=\"color-sample-container\"><div class=\"color-sample\" style=\"background-color:<%=datasets[i].strokeColor%>;border-color:#fff;\"></div></div><%=datasets[i].label%></div><%}%><%}%>"
+
+                 legendTemplate:"<%for (var i=0; i<datasets.length; i++){%><%if(datasets[i].label){%><div class=\"title\"><div class=\"color-sample-container\"><div class=\"color-sample\" style=\"background-color:<%=datasets[i].strokeColor%>;border-color:#fff;\"></div></div><div class =\"az\"><%=datasets[i].label%></div></div><%}%><%}%>"
+            });
             document.getElementById('js-legend').innerHTML = myLineChart.generateLegend();
             return this;
         }
