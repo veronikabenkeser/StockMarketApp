@@ -33,14 +33,19 @@ define(['jquery',
                     'stock_name': company
                 }
             }).done(function(obj) {
+                if($.isEmptyObject(obj)){
+                     $('.search-form .error').show();
+                    return;
+                }
+                $('.search-form .error').hide();
                 var stock = new Stock(obj);
                 stock.save(null, {
                     error: function(model, response, options) {
                         alert('This stock has not been saved.');
+                       
                     },
                     success: function(model, response, options) {
                         EventBus.trigger('stock-added', response);
-                        EventBus.trigger('graph:newData', response);
                     }
                 });
             }).fail(function(err) {

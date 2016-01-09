@@ -18,12 +18,13 @@ define(['jquery',
             var stocks = new Stocks();
             stocks.fetch() //fires a GET request to 'api/polls/' and fires a collection reset event
                 .done(function() {
-                    var graphView = new GraphView();
                     var stocksView = new StocksView({
                         collection: stocks
                     });
+                     var graphView = new GraphView({
+                         initArr:stocks.models
+                     });
                     var searchView = new SearchView();
-                   
                     return this;
                 })
                 .fail(function(err) {

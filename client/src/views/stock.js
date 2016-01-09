@@ -21,15 +21,13 @@ define(['jquery',
             //delete from collection and server
             self.model.destroy({
                 success: function(model, response, options) {
-                    EventBus.trigger('stock-del', model);
+                    EventBus.trigger('stock-deleted', model);
                 },
                 error: function(model, response, options) {
                     console.log('error deleting the model');
-
                 }
             });
         },
-
         render: function() {
             this.$el.html(this.template({
                 stock: this.model.toJSON()

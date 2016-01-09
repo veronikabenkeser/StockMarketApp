@@ -44,7 +44,9 @@ require(['jquery', 'bootstrap-js', 'underscore', 'backbone', 'chart-js', 'socket
             });
 
             socket.on('notifyOf-del', function(stock) {
-                EventBus.trigger('stock:delStock', stock);
+                EventBus.trigger('stocks:delStock', stock);
+                // EventBus.trigger('graph:delStock',stock.symbol);
+                // EventBus.trigger('graph:clear');
             });
         });
         var homeView = new HomeView();
