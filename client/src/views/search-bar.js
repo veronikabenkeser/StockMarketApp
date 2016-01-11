@@ -46,6 +46,7 @@ define(['jquery',
                     },
                     success: function(model, response, options) {
                         EventBus.trigger('stock-added', response);
+                        document.getElementById('stock-name').value='';
                     }
                 });
             }).fail(function(err) {
