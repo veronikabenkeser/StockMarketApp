@@ -29,7 +29,7 @@ require(['jquery', 'bootstrap-js', 'underscore', 'backbone', 'chart-js', 'socket
     $(function() {
         var socket = io.connect('https://stocks-app-autumncat.c9users.io/');
         socket.on('connect', function(data) {
-
+            
             EventBus.on('add-notify', function(stock) {
                 socket.emit('notify-add-stock', stock);
             });

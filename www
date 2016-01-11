@@ -1,18 +1,15 @@
-#!/bin/env node
-//Bind our app to a network
 var http = require("http");
 var app = require('./server');
 var server = http.createServer(app);
 var sio = require("socket.io");
 
 
-var io = sio.listen(server); //listen for requests on the http server
-// var io = require('socket.io')(server);
-//chmod +x www to make this file executable
-
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
-  console.log("Server listening now.. ");
+var io = sio.listen(server);
+server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function() {
+    console.log("Server listening now.. ");
 });
 
 var IoServer = require('./ioserver');
-new IoServer({io: io});
+new IoServer({
+    io: io
+});

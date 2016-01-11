@@ -18,7 +18,6 @@ define(['jquery',
         },
         deleteStock: function() {
             var self = this;
-            //delete from collection and server
             self.model.destroy({
                 success: function(model, response, options) {
                     EventBus.trigger('stock-deleted', model);

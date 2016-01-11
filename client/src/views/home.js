@@ -6,7 +6,7 @@ define(['jquery',
     'src/views/graph',
     'src/views/stocks',
     'src/collections/stocks'
-], function($, _, Backbone, HomeTemplate,  SearchView, GraphView, StocksView,  Stocks) {
+], function($, _, Backbone, HomeTemplate, SearchView, GraphView, StocksView, Stocks) {
     var HomeView = Backbone.View.extend({
         template: _.template(HomeTemplate),
         el: '.container',
@@ -16,14 +16,14 @@ define(['jquery',
         render: function() {
             this.$el.html(this.template);
             var stocks = new Stocks();
-            stocks.fetch() //fires a GET request to 'api/polls/' and fires a collection reset event
+            stocks.fetch()
                 .done(function() {
                     var stocksView = new StocksView({
                         collection: stocks
                     });
-                     var graphView = new GraphView({
-                         initArr:stocks.models
-                     });
+                    var graphView = new GraphView({
+                        initArr: stocks.models
+                    });
                     var searchView = new SearchView();
                     return this;
                 })
