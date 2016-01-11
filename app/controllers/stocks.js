@@ -3,20 +3,7 @@ var request = require("request");
 var Stock = require("../models/stock");
 
 module.exports = {
-
     addStock: function(req, res) {
-        // var self=this;
-        // self.getStockData(req) 
-        //   .then(function(dataArr){
-        //         var modDataArr=self.formatData(dataArr);
-        //         return self.createStock(modDataArr,req.body.stock_name);
-        //   })
-        //   .then(function(savedStock){
-        //      return res.json(savedStock);
-        //   }).catch(function(){
-        //     res.status(500).send({ error: "Unknown internal server error" });
-        //   });
-
         var self = this;
         self.getStockData(req)
             .then(function(dataArr) {
@@ -33,7 +20,6 @@ module.exports = {
                     error: "Unknown internal server error"
                 });
             });
-
     },
     formatData: function(dataArr) {
         var labels = [];
@@ -47,18 +33,6 @@ module.exports = {
             prices.push(parseInt(price, 10));
         }
         return [labels, prices];
-    },
-    createStock: function(dataArr, stockSym) {
-        return new Promise(function(resolve, reject) {
-            var stock = new Stock();
-            stock.symbol = stockSym;
-            stock.labels = dataArr[0];
-            stock.prices = dataArr[1];
-            stock.save(function(err) {
-                if (err) reject(err);
-                resolve(stock);
-            });
-        });
     },
     getStockData: function(req) {
         return new Promise(function(resolve, reject) {
@@ -96,9 +70,6 @@ module.exports = {
         });
     },
     getStockById: function(req, res) {
-        console.log('req.params.stock_id' + req.params.stock_id);
-        console.log('req.body.id' + req.body.id);
-        console.log('req' + req.body._id);
         Stock.findById(req.params.stock_id, function(err, stock) {
             if (err) return res.status(400).json(err);
             res.json(stock);

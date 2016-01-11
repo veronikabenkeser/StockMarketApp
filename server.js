@@ -1,12 +1,7 @@
-var http = require('http');
-var path = require("path");
 var express = require('express');
 var mongoose  = require("mongoose");
 var config = require("./config");
 var bodyParser = require("body-parser");
-var redis = require("redis");
-// var redisClient = redis.createClient();
-
 var app = express();
 
 //App configuration
@@ -39,11 +34,5 @@ var apiRoutes = require("./app/routes/api")(app,express);
 
 //Register our apiRoutes
 app.use('/api',apiRoutes);
-
-//When the user goes to http://examples.com/posts (a client-side route) directly,
-// will serve up the index file and the request will then be handled by Backbone.
-// app.get('*', function(req, res){
-//   res.sendFile(path.join(__dirname+'/client/index.html'));
-// }); 
 
 module.exports = app;
