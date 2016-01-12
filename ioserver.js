@@ -3,11 +3,8 @@ var IoServer = function(options) {
     self.io = options.io;
     //server receives a connection
     self.io.on('connection', function(client) { //server receiving the event called 'connection'
-        console.log('Client connected...');
-
         //server receives browsers 'notify-add-stock' message
         client.on('notify-add-stock', function(stock) {
-
             //server responds back with a message to the client
             client.broadcast.emit('notifyOf-add', stock);
         });

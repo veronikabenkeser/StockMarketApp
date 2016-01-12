@@ -5,14 +5,14 @@ define(['jquery',
     'chart-js',
     'eventBus',
     'src/models/stock',
-    'src/views/stock',
-    'socketIO'
-], function($, _, Backbone, SearchTemplate, Chart, EventBus, Stock, StockView, io) {
+    'src/views/stock'
+], function($, _, Backbone, SearchTemplate, Chart, EventBus, Stock, StockView) {
     var SearchView = Backbone.View.extend({
         template: _.template(SearchTemplate),
         el: '#search-bar',
         initialize: function() {
             this.render();
+            this.bindEvents();
         },
         render: function() {
             this.$el.html(this.template);
@@ -21,10 +21,19 @@ define(['jquery',
         events: {
             'click .search': 'searchStock'
         },
-        searchStock: function(e) {
-            e.preventDefault();
+        bindEvents: function() {
             var self = this;
-            var company = $('#stock-name').val();
+            EventBus.on('in-history', function(inHist, stock) {
+                if (inHist) {
+                    $('.search-form .error').text('This stock has already been graphed. Please enter a new stock name.').show();
+                }
+                else {
+                    $('.search-form .error').hide();
+                    self.addStock(stock);
+                }
+            });
+        },
+        addStock: function(company) {
             $.ajax({
                 url: '/api/stocks/check',
                 type: 'POST',
@@ -34,7 +43,7 @@ define(['jquery',
                 }
             }).done(function(obj) {
                 if ($.isEmptyObject(obj)) {
-                    $('.search-form .error').show();
+                    $('.search-form .error').text('Please enter a valid stock name.').show();
                     return;
                 }
                 $('.search-form .error').hide();
@@ -42,16 +51,20 @@ define(['jquery',
                 stock.save(null, {
                     error: function(model, response, options) {
                         alert('This stock has not been saved.');
-
                     },
                     success: function(model, response, options) {
                         EventBus.trigger('stock-added', response);
-                        document.getElementById('stock-name').value = '';
                     }
                 });
             }).fail(function(err) {
                 console.log(err);
             });
+        },
+        searchStock: function(e) {
+            e.preventDefault();
+            var company = $('#stock-name').val().toUpperCase();
+            EventBus.trigger('validate:new-stock', company);
+            document.getElementById('stock-name').value = '';
         }
     });
     return SearchView;

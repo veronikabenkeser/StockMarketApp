@@ -39,10 +39,22 @@ define(['jquery',
             EventBus.on('graph:delStock', function(symb) {
                 self.removeStock(symb);
             });
+            EventBus.on('validate:new-stock', function(stock) {
+                var len = self.data.datasets.length;
+                var inHist = false;
+                for (var i = 0; i < len; i++) {
+                    if (self.data.datasets[i].label === stock) {
+                        inHist = true;
+                        break;
+                    }
+                }
+                EventBus.trigger('in-history', inHist, stock);
+            });
         },
         removeStock: function(symb) {
             var self = this;
-            for (var i = 0; i < self.data.datasets.length; i++) {
+            var len = self.data.datasets.length;
+            for (var i = 0; i < len; i++) {
                 if (self.data.datasets[i].label === symb) {
                     self.data.datasets.splice(i, 1);
                     self.render();

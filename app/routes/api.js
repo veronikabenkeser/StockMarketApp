@@ -1,6 +1,5 @@
 var stocks = require("../controllers/stocks");
 
-//Passing app and express from the server.js file
 module.exports = function(app, express) {
     var apiRouter = express.Router();
 
