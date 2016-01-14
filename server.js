@@ -1,7 +1,7 @@
+require('dotenv').load();
 var path = require("path");
 var express = require('express');
 var mongoose = require("mongoose");
-var config = require("./config");
 var bodyParser = require("body-parser");
 var app = express();
 
@@ -18,16 +18,16 @@ app.use(function(req, res, next) {
 
 });
 
-mongoose.connect(config.database[app.settings.env], function(err, res) {
+mongoose.connect(process.env.MONGOLAB_URI, function(err, res) {
   if (err) {
     console.log('Error connecting to the database. ' + err);
   }
   else {
-    console.log('Connected to Database: ' + config.database[app.settings.env]);
+    console.log('Connected to Database: ' + process.env.MONGOLAB_URI);
   }
 });
 
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static(__dirname + '/client'));
 var apiRoutes = require("./app/routes/api")(app, express);
 app.use('/api', apiRoutes);
 

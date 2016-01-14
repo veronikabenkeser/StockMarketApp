@@ -1,0 +1,2 @@
+API_KEY = fake_key
+MONGOLAB_URI = fake_mongoDb_uri

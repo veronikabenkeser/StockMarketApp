@@ -1,4 +1,3 @@
-var config = require("../../config");
 var request = require("request");
 var Stock = require("../models/stock");
 
@@ -37,7 +36,7 @@ module.exports = {
     getStockData: function(req) {
         return new Promise(function(resolve, reject) {
             var comp = req.body.stock_name;
-            var api_key = config.api_key;
+            var api_key = process.env.API_KEY;
             var url = 'https://www.quandl.com/api/v3/datasets/WIKI/';
             var fullUrl = url + comp + '/data.json?order=asc&column_index=4&collapse=monthly&start_date=2015-01-01&api_key=' + api_key;
             request({

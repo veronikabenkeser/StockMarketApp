@@ -33,6 +33,7 @@ canvas {
   position: absolute;
   margin-left: 22px;
   margin-top: -5px;
+  cursor:pointer;
 }
 
 #stock-list {

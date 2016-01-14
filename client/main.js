@@ -1,8 +1,8 @@
 require.config({
     paths: {
-        'jquery': 'libs/jquery/dist/jquery',
-        'underscore': 'libs/underscore/underscore',
-        'backbone': 'libs/backbone/backbone',
+        'jquery': 'libs/jquery/jquery.min',
+        'underscore': 'libs/underscore/underscore-min',
+        'backbone': 'libs/backbone/backbone-min',
         'text': 'libs/text/text',
         'chart-js': 'libs/Chart.js/Chart.min',
         'socket.io': "socket.io/socket.io"
