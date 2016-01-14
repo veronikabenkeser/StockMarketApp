@@ -43,7 +43,7 @@ define(['jquery',
                 }
             }).done(function(obj) {
                 if ($.isEmptyObject(obj)) {
-                    $('.search-form .error').text('Please enter a valid stock name.').show();
+                    $('.search-form .error').text('Please enter a valid stock ticker symbol.').show();
                     return;
                 }
                 $('.search-form .error').hide();

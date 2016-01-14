@@ -1,6 +1,9 @@
 {
   "name": "stocks-app",
   "version": "0.0.0",
+  "engines": {
+    "node": "4.1.1"
+   },
   "description": "",
   "main": "server.js",
   "repository": "",
