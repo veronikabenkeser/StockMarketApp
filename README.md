@@ -1,5 +1,5 @@
 <h1>Real-Time Collaborative Stock Tracker</h1>
-This project was built as a part of Free Code Camp's Front-End Development curriculum.
+This project was built as a part of Free Code Camp's Full-Stack Development curriculum.
 
 <h2>Summary</h2>
 The project was built using Node.js, Express, Socket.io, Backbone.js, MongoDB, Mongoose, Chart.js, and Bootstrap. 
