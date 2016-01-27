@@ -13,4 +13,4 @@ The project was built using Node.js, Express, Socket.io, Backbone.js, MongoDB, M
 <h2>Try it:</h2>
 https://real-time-stocks.herokuapp.com/
 
-<img src="http://i867.photobucket.com/albums/ab236/Veronika_and_Robert/Screenshot%20from%202016-01-26%20155827_zpsfeyqeqge.png" alt="project-pic">
+<img src="http://i867.photobucket.com/albums/ab236/Veronika_and_Robert/Screenshot%20from%202016-01-26%20073444_zpskiodrtdl.png" alt="project-pic">
